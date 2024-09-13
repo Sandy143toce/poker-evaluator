@@ -28,14 +28,30 @@ func EvaluatePokerHand(c *fiber.Ctx) error {
 	playerCards := convertToCards(request.PlayerCards)
 	tableCards := convertToCards(request.TableCards)
 
-	// Evaluate the hand
-	hand := utils.EvaluateHand(playerCards, tableCards)
+	// Evaluate the player's best hand
+	playerBestHand := utils.EvaluateHand(playerCards, tableCards)
+
+	// Find other possible best hands
+	otherBestHands := utils.FindOtherBestHands(tableCards)
 
 	// Prepare the response
 	response := models.PokerEvaluationResponse{
-		Hand:     hand.Name,
-		HandRank: hand.Rank,
-		Cards:    convertToStringCards(hand.Cards),
+		PlayerBestHand: models.Hand{
+			Name:     playerBestHand.Name,
+			Rank:     playerBestHand.Rank,
+			Cards:    convertToStringCards(playerBestHand.Cards),
+			Sequence: playerBestHand.Sequence,
+		},
+		OtherBestHands: make([]models.Hand, len(otherBestHands)),
+	}
+
+	for i, hand := range otherBestHands {
+		response.OtherBestHands[i] = models.Hand{
+			Name:     hand.Name,
+			Rank:     hand.Rank,
+			Cards:    convertToStringCards(hand.Cards),
+			Sequence: hand.Sequence,
+		}
 	}
 
 	// Store the result in the database

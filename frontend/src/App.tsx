@@ -4,10 +4,16 @@ import CardDeck from './components/CardDeck';
 import CardBoard from './components/CardBoard';
 import HandEvaluation from './components/HandEvaluation';
 
-interface GameResult {
-  hand: string;
-  handRank: number;
+interface Hand {
+  name: string;
+  rank: number;
   cards: string[];
+  sequence: number[];
+}
+
+interface GameResult {
+  playerBestHand: Hand;
+  otherBestHands: Hand[];
 }
 
 function App() {
@@ -69,7 +75,7 @@ function App() {
         throw new Error('Failed to evaluate hand');
       }
 
-      const result = await response.json();
+      const result: GameResult = await response.json();
       setCurrentHand(result);
     } catch (error) {
       console.error('Error evaluating hand:', error);
@@ -101,9 +107,8 @@ function App() {
           {loading && <p>Evaluating hand...</p>}
           {currentHand && (
             <HandEvaluation
-              hand={currentHand.hand}
-              handRank={currentHand.handRank}
-              cards={currentHand.cards}
+              playerBestHand={currentHand.playerBestHand}
+              otherBestHands={currentHand.otherBestHands}
             />
           )}
         </div>

@@ -3,22 +3,21 @@ schema "public" {
 table "game_results" {
   schema = schema.public
   column "id" {
-    type = serial
-  }
-
-  column "hand" {
-    type = varchar(50)
     null = false
-  }
-
-  column "hand_rank" {
     type = integer
-    null = false
+    identity {
+      generated = ALWAYS
+    }
   }
 
-  column "cards" {
-    type = sql("text[]")
+  column "player_best_hand" {
     null = false
+    type = jsonb
+  }
+
+  column "other_best_hands" {
+    null = false
+    type = jsonb
   }
 
   column "created_at" {
@@ -35,13 +34,5 @@ table "game_results" {
     columns = [column.created_at]
     type    = "btree"
     order   = "DESC"
-  }
-
-  constraint "check_hand_rank" {
-    expr = "hand_rank >= 0 AND hand_rank <= 10"
-  }
-
-  constraint "check_cards_count" {
-    expr = "array_length(cards, 1) BETWEEN 5 AND 7"
   }
 }

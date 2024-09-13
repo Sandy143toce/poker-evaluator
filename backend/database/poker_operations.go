@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/Sandy143toce/poker-evaluator/backend/models"
@@ -10,16 +11,26 @@ import (
 
 func StoreGameResult(db *pgxpool.Pool, result models.PokerEvaluationResponse) error {
 	query := `
-		INSERT INTO game_results (hand, hand_rank, cards, created_at)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO game_results (player_best_hand, other_best_hands, created_at)
+		VALUES ($1, $2, $3)
 	`
-	_, err := db.Exec(context.Background(), query, result.Hand, result.HandRank, result.Cards, time.Now())
+	playerBestHandJSON, err := json.Marshal(result.PlayerBestHand)
+	if err != nil {
+		return err
+	}
+
+	otherBestHandsJSON, err := json.Marshal(result.OtherBestHands)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(context.Background(), query, playerBestHandJSON, otherBestHandsJSON, time.Now())
 	return err
 }
 
 func GetRecentGameResults(db *pgxpool.Pool, limit int) ([]models.PokerEvaluationResponse, error) {
 	query := `
-		SELECT hand, hand_rank, cards
+		SELECT player_best_hand, other_best_hands
 		FROM game_results
 		ORDER BY created_at DESC
 		LIMIT $1
@@ -33,10 +44,23 @@ func GetRecentGameResults(db *pgxpool.Pool, limit int) ([]models.PokerEvaluation
 	var results []models.PokerEvaluationResponse
 	for rows.Next() {
 		var result models.PokerEvaluationResponse
-		err := rows.Scan(&result.Hand, &result.HandRank, &result.Cards)
+		var playerBestHandJSON, otherBestHandsJSON []byte
+
+		err := rows.Scan(&playerBestHandJSON, &otherBestHandsJSON)
 		if err != nil {
 			return nil, err
 		}
+
+		err = json.Unmarshal(playerBestHandJSON, &result.PlayerBestHand)
+		if err != nil {
+			return nil, err
+		}
+
+		err = json.Unmarshal(otherBestHandsJSON, &result.OtherBestHands)
+		if err != nil {
+			return nil, err
+		}
+
 		results = append(results, result)
 	}
 
