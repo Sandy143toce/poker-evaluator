@@ -12,7 +12,7 @@ const HandEvaluation: React.FC<HandEvaluationProps> = ({ hand, handRank, cards }
       <h3>Hand Evaluation</h3>
       <p><strong>Hand:</strong> {hand}</p>
       <p><strong>Rank:</strong> {handRank}</p>
-      <p><strong>Cards:</strong> {cards.join(', ')}</p>
+      <p><strong>Possible Strong Hands:</strong> {cards.join(', ')}</p>
     </div>
   );
 };

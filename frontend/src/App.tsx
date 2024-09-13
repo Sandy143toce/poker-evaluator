@@ -31,17 +31,38 @@ function App() {
     }
   }, [handCards, tableCards]);
 
+  const convertCardFormat = (card: string): string => {
+    const rankMap: { [key: string]: string } = {
+      'A': 'A', 'K': 'K', 'Q': 'Q', 'J': 'J', '10': '10',
+      '9': '9', '8': '8', '7': '7', '6': '6', '5': '5', '4': '4', '3': '3', '2': '2'
+    };
+    const suitMap: { [key: string]: string } = {
+      '♥': 'H', '♠': 'S', '♦': 'D', '♣': 'C'
+    };
+
+    const rank = card.slice(0, -1);
+    const suit = card.slice(-1);
+
+    return `${rankMap[rank] || rank}${suitMap[suit] || suit}`;
+  };
+
   const handleEvaluateHand = async () => {
     setLoading(true);
     setError(null);
 
     try {
+      const convertedHandCards = handCards.map(convertCardFormat);
+      const convertedTableCards = tableCards.map(convertCardFormat);
+
       const response = await fetch('http://localhost:8080/evaluate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ playerCards: handCards, tableCards }),
+        body: JSON.stringify({
+          playerCards: convertedHandCards,
+          tableCards: convertedTableCards
+        }),
       });
 
       if (!response.ok) {
