@@ -137,6 +137,13 @@ The frontend application will be available at `http://localhost:3000`.
 - `POST /evaluate`: Evaluate a poker hand
 - `GET /recent-results`: Get recent game results
 
+## CARD FORMAT
+
+- Each card is a string combining Rank and Suit
+- Rank: 2-10, J (Jack), Q (Queen), K (King), A (Ace)
+- Suit: H (Hearts), D (Diamonds), C (Clubs), S (Spades)
+- example "Cards": ["AS", "KS", "2H"]
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.

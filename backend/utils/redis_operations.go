@@ -15,6 +15,10 @@ const (
 )
 
 func CacheRecentGameResults(client *redis.Client, results []models.PokerEvaluationResponse) error {
+	if client == nil {
+		return nil // Silently skip caching if Redis is not available
+	}
+
 	data, err := json.Marshal(results)
 	if err != nil {
 		return err
@@ -24,6 +28,10 @@ func CacheRecentGameResults(client *redis.Client, results []models.PokerEvaluati
 }
 
 func GetCachedRecentGameResults(client *redis.Client) ([]models.PokerEvaluationResponse, error) {
+	if client == nil {
+		return nil, nil // Return empty results if Redis is not available
+	}
+
 	data, err := client.Get(context.Background(), RecentGameResultsKey).Result()
 	if err != nil {
 		if err == redis.Nil {

@@ -33,15 +33,5 @@ table "game_results" {
 
   index "idx_game_results_created_at" {
     columns = [column.created_at]
-    type    = "btree"
-    order   = "DESC"
-  }
-
-  constraint "check_hand_rank" {
-    expr = "hand_rank >= 0 AND hand_rank <= 10"
-  }
-
-  constraint "check_cards_count" {
-    expr = "array_length(cards, 1) BETWEEN 5 AND 7"
   }
 }

@@ -25,17 +25,20 @@ func InitRedis() *redis.Client {
 
 	opt, err := redis.ParseURL(redisURL)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to parse Redis URL: %v", err))
+		fmt.Printf("Warning: Failed to parse Redis URL: %v\n", err)
+		return nil
 	}
 
 	client := redis.NewClient(opt)
 
 	_, err = client.Ping(context.Background()).Result()
 	if err != nil {
-		panic(fmt.Sprintf("Failed to connect to Redis: %v", err))
+		fmt.Printf("Warning: Failed to connect to Redis: %v\n", err)
+		return nil
 	}
 
 	RedisClient = client
+	fmt.Println("Successfully connected to Redis")
 	return client
 }
 

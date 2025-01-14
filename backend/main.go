@@ -29,7 +29,9 @@ func main() {
 
 	// Initialize Redis connection
 	redisClient := utils.InitRedis()
-	defer redisClient.Close()
+	if redisClient != nil {
+		defer redisClient.Close()
+	}
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
