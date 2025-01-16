@@ -3,6 +3,7 @@ import './App.css';
 import CardDeck from './components/CardDeck';
 import CardBoard from './components/CardBoard';
 import HandEvaluation from './components/HandEvaluation';
+import { API_URL } from './config';
 
 interface GameResult {
   hand: string;
@@ -54,7 +55,7 @@ function App() {
       const convertedHandCards = handCards.map(convertCardFormat);
       const convertedTableCards = tableCards.map(convertCardFormat);
 
-      const response = await fetch('http://localhost:8080/evaluate', {
+      const response = await fetch(`${API_URL}/evaluate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 import React from 'react';
+import PlayingCard from './Card';
 
 interface CardDeckProps {
   onCardSelect: (card: string) => void;
@@ -14,23 +15,12 @@ const CardDeck: React.FC<CardDeckProps> = ({ onCardSelect }) => {
         <div key={suit} className="suit-group">
           <div className="cards">
             {values.map(value => (
-              <button
+              <PlayingCard
                 key={`${value}${suit}`}
-                className={`card ${suit === '♥' || suit === '♦' ? 'red' : 'black'}`}
+                value={value}
+                suit={suit}
                 onClick={() => onCardSelect(`${value}${suit}`)}
-              >
-                <div className="card-inner">
-                  <div className="card-top-left">
-                    <span className="card-value">{value}</span>
-                  </div>
-                  <div className="card-center">
-                    <span className="card-suit">{suit}</span>
-                  </div>
-                  <div className="card-bottom-right">
-                    <span className="card-value">{value}</span>
-                  </div>
-                </div>
-              </button>
+              />
             ))}
           </div>
         </div>
