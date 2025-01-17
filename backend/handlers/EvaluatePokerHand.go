@@ -24,12 +24,15 @@ func EvaluatePokerHand(c *fiber.Ctx) error {
 		})
 	}
 
+	fmt.Println("Player cards:", request.PlayerCards)
+	fmt.Println("Table cards:", request.TableCards)
+
 	// Convert request cards to utils.Card
 	playerCards := convertToCards(request.PlayerCards)
 	tableCards := convertToCards(request.TableCards)
 
 	// Evaluate the hand
-	hand := utils.EvaluateHand(playerCards, tableCards)
+	hand := utils.GetBestHand(playerCards, tableCards)
 
 	// Prepare the response
 	response := models.PokerEvaluationResponse{

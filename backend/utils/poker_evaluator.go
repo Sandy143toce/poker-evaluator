@@ -16,19 +16,19 @@ type Hand struct {
 }
 
 const (
-	HighCard = iota
-	Pair
-	TwoPair
-	ThreeOfAKind
-	Straight
-	Flush
-	FullHouse
-	FourOfAKind
+	RoyalFlush = iota
 	StraightFlush
-	RoyalFlush
+	FourOfAKind
+	FullHouse
+	Flush
+	Straight
+	ThreeOfAKind
+	TwoPair
+	Pair
+	HighCard
 )
 
-func EvaluateHand(playerCards []Card, tableCards []Card) Hand {
+func GetBestHand(playerCards []Card, tableCards []Card) Hand {
 	allCards := append(playerCards, tableCards...)
 
 	// Sort cards by rank in descending order
@@ -129,15 +129,58 @@ func checkFlush(cards []Card) Hand {
 }
 
 func checkStraight(cards []Card) Hand {
-	for i := 0; i <= len(cards)-5; i++ {
-		if cards[i].Rank-cards[i+4].Rank == 4 {
-			return Hand{Cards: cards[i : i+5], Name: "Straight", Rank: Straight}
+	// Get unique ranks and sort them
+	rankMap := make(map[int]Card)
+	ranks := []int{}
+	for _, card := range cards {
+		if _, exists := rankMap[card.Rank]; !exists {
+			rankMap[card.Rank] = card
+			ranks = append(ranks, card.Rank)
 		}
 	}
-	// Check for Ace-low straight
-	if cards[0].Rank == 14 && cards[len(cards)-4].Rank == 5 && cards[len(cards)-3].Rank == 4 && cards[len(cards)-2].Rank == 3 && cards[len(cards)-1].Rank == 2 {
-		return Hand{Cards: append(cards[len(cards)-4:], cards[0]), Name: "Straight", Rank: Straight}
+	sort.Sort(sort.Reverse(sort.IntSlice(ranks)))
+
+	// Check for regular straight
+	for i := 0; i <= len(ranks)-5; i++ {
+		if ranks[i]-ranks[i+4] == 4 {
+			// Found a straight - get the actual cards
+			straightCards := make([]Card, 5)
+			for j := 0; j < 5; j++ {
+				straightCards[j] = rankMap[ranks[i+j]]
+			}
+			return Hand{Cards: straightCards, Name: "Straight", Rank: Straight}
+		}
 	}
+
+	// Check for Ace-low straight
+	hasAce := false
+	has2to5 := true
+	aceCard := Card{}
+	lowStraightCards := make([]Card, 0, 5)
+
+	for _, card := range cards {
+		if card.Rank == 14 {
+			hasAce = true
+			aceCard = card
+		}
+	}
+
+	if hasAce {
+		for _, rank := range []int{2, 3, 4, 5} {
+			if _, exists := rankMap[rank]; !exists {
+				has2to5 = false
+				break
+			}
+		}
+		if has2to5 {
+			for _, rank := range []int{2, 3, 4, 5} {
+				lowStraightCards = append(lowStraightCards, rankMap[rank])
+			}
+			lowStraightCards = append(lowStraightCards, aceCard)
+			return Hand{Cards: lowStraightCards, Name: "Straight", Rank: Straight}
+		}
+	}
+
 	return Hand{}
 }
 
