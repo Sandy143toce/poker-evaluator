@@ -1,4 +1,5 @@
 import React from 'react';
+import PlayingCard from './Card';  // Import the PlayingCard component
 
 interface CardBoardProps {
   handCards: string[];
@@ -6,6 +7,13 @@ interface CardBoardProps {
 }
 
 const CardBoard: React.FC<CardBoardProps> = ({ handCards, tableCards }) => {
+  // Helper function to split card string into value and suit
+  const splitCard = (card: string): { value: string, suit: string } => {
+    const value = card.slice(0, -1);
+    const suit = card.slice(-1);
+    return { value, suit };
+  };
+
   return (
     <div className="card-board">
       <div className="instructions">
@@ -19,7 +27,11 @@ const CardBoard: React.FC<CardBoardProps> = ({ handCards, tableCards }) => {
         <div className="card-slots hand-cards">
           {Array.from({ length: 2 }).map((_, index) => (
             <div key={`hand-${index}`} className="card-slot">
-              {handCards[index] ? handCards[index] : ''}
+              {handCards[index] ? (
+                <PlayingCard 
+                  {...splitCard(handCards[index])}
+                />
+              ) : ''}
             </div>
           ))}
         </div>
@@ -29,7 +41,11 @@ const CardBoard: React.FC<CardBoardProps> = ({ handCards, tableCards }) => {
         <div className="card-slots table-cards">
           {Array.from({ length: 5 }).map((_, index) => (
             <div key={`table-${index}`} className="card-slot">
-              {tableCards[index] ? tableCards[index] : ''}
+              {tableCards[index] ? (
+                <PlayingCard 
+                  {...splitCard(tableCards[index])}
+                />
+              ) : ''}
             </div>
           ))}
         </div>
