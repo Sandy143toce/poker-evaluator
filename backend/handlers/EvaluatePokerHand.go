@@ -34,6 +34,7 @@ func EvaluatePokerHand(c *fiber.Ctx) error {
 	// Evaluate the hand
 	hand := utils.GetBestHand(playerCards, tableCards)
 	potentialBetter := utils.GetPotentialBetterHands(playerCards, tableCards, hand)
+	fmt.Println("Better hands:", potentialBetter)
 
 	// Prepare the response
 	response := models.PokerEvaluationResponse{

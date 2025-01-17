@@ -9,6 +9,12 @@ interface GameResult {
   hand: string;
   handRank: number;
   cards: string[];
+  potentialBetterHands: PotentialBetterHand[];
+}
+interface PotentialBetterHand {
+  name: string;
+  handRank: number;
+  neededCards: string[];
 }
 
 function App() {
@@ -104,8 +110,7 @@ function App() {
             <HandEvaluation
               hand={currentHand.hand}
               handRank={currentHand.handRank}
-              cards={currentHand.cards}
-            />
+              cards={currentHand.cards} potentialBetterHands={currentHand.potentialBetterHands}            />
           )}
         </div>
       </div>

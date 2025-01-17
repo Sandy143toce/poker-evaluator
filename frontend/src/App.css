@@ -272,6 +272,50 @@ body {
   }
 }
 
+/*potential hands css*/
+.potential-hands {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(52, 152, 219, 0.1);
+  border-radius: 8px;
+}
+
+.potential-hands h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.potential-hands-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.potential-hand-item {
+  background-color: white;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.potential-hand-name {
+  margin: 0 0 8px 0;
+  color: var(--primary-color);
+}
+
+.potential-hand-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.potential-hand-cards p {
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--text-color);
+}
+
 
 
 .instructions {

@@ -1,13 +1,21 @@
 import React from 'react';
 import PlayingCard from './Card';
+import PotentialHands from './PotentialHands'; 
 
 interface HandEvaluationProps {
   hand: string;
   handRank: number;
   cards: string[];
+  potentialBetterHands: PotentialBetterHand[]; 
 }
 
-const HandEvaluation: React.FC<HandEvaluationProps> = ({ hand, handRank, cards }) => {
+interface PotentialBetterHand {
+  name: string;
+  handRank: number;
+  neededCards: string[];
+}
+
+const HandEvaluation: React.FC<HandEvaluationProps> = ({ hand, handRank, cards, potentialBetterHands }) => {
   // Helper function to convert card format (e.g., "10D" to {value: "10", suit: "♦"})
   const convertCard = (card: string) => {
     const suitMap: { [key: string]: string } = {
@@ -45,6 +53,7 @@ const HandEvaluation: React.FC<HandEvaluationProps> = ({ hand, handRank, cards }
           })}
         </div>
       </div>
+      <PotentialHands potentialHands={potentialBetterHands} />
     </div>
   );
 };
