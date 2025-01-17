@@ -4,10 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/Sandy143toce/poker-evaluator/backend/database"
 	"github.com/Sandy143toce/poker-evaluator/backend/middleware"
 	"github.com/Sandy143toce/poker-evaluator/backend/setup"
-	"github.com/Sandy143toce/poker-evaluator/backend/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -19,21 +17,21 @@ func main() {
 	godotenv.Load() // Ignore error as file may not exist in production
 
 	// Initialize database connection
-	db, err := database.InitDB()
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
-	defer db.Close()
+	// db, err := database.InitDB()
+	// if err != nil {
+	// 	log.Fatalf("Failed to connect to database: %v", err)
+	// }
+	// defer db.Close()
 
 	// Initialize Redis connection only if Redis config is present
-	if os.Getenv("REDIS_HOST") != "" {
-		redisClient := utils.InitRedis()
-		if redisClient != nil {
-			defer redisClient.Close()
-		}
-	} else {
-		log.Println("Redis configuration not found, skipping Redis initialization")
-	}
+	// if os.Getenv("REDIS_HOST") != "" {
+	// 	redisClient := utils.InitRedis()
+	// 	if redisClient != nil {
+	// 		defer redisClient.Close()
+	// 	}
+	// } else {
+	// 	log.Println("Redis configuration not found, skipping Redis initialization")
+	// }
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{

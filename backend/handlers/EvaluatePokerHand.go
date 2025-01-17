@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/Sandy143toce/poker-evaluator/backend/database"
 	"github.com/Sandy143toce/poker-evaluator/backend/models"
 	"github.com/Sandy143toce/poker-evaluator/backend/utils"
 	"github.com/gofiber/fiber/v2"
@@ -45,17 +44,17 @@ func EvaluatePokerHand(c *fiber.Ctx) error {
 	}
 
 	// Store the result in the database
-	db := database.GetDB()
-	err := database.StoreGameResult(db, response)
-	if err != nil {
-		// Log the error, but don't return it to the client
-		fmt.Printf("Failed to store game result: %v\n", err)
-	}
+	// db := database.GetDB()
+	// err := database.StoreGameResult(db, response)
+	// if err != nil {
+	// 	// Log the error, but don't return it to the client
+	// 	fmt.Printf("Failed to store game result: %v\n", err)
+	// }
 
 	// Update the cached recent game results
-	redisClient := utils.GetRedisClient()
-	recentResults, _ := database.GetRecentGameResults(db, 10)
-	_ = utils.CacheRecentGameResults(redisClient, recentResults)
+	// redisClient := utils.GetRedisClient()
+	// recentResults, _ := database.GetRecentGameResults(db, 10)
+	// _ = utils.CacheRecentGameResults(redisClient, recentResults)
 
 	return c.JSON(response)
 }
