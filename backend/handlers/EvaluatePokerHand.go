@@ -33,12 +33,14 @@ func EvaluatePokerHand(c *fiber.Ctx) error {
 
 	// Evaluate the hand
 	hand := utils.GetBestHand(playerCards, tableCards)
+	potentialBetter := utils.GetPotentialBetterHands(playerCards, tableCards, hand)
 
 	// Prepare the response
 	response := models.PokerEvaluationResponse{
-		Hand:     hand.Name,
-		HandRank: hand.Rank,
-		Cards:    convertToStringCards(hand.Cards),
+		Hand:            hand.Name,
+		HandRank:        hand.Rank,
+		Cards:           convertToStringCards(hand.Cards),
+		PotentialBetter: potentialBetter,
 	}
 
 	// Store the result in the database

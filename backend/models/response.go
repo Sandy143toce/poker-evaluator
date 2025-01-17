@@ -1,9 +1,14 @@
 package models
 
 type PokerEvaluationResponse struct {
-	Hand     string   `json:"hand"`
-	HandRank int      `json:"handRank"`
-	Cards    []string `json:"cards"`
+	Hand            string                `json:"hand"`
+	HandRank        int                   `json:"handRank"`
+	Cards           []string              `json:"cards"`
+	PotentialBetter []PotentialBetterHand `json:"potentialBetterHands"`
 }
 
-// Add other response models here if needed
+type PotentialBetterHand struct {
+	Name        string   `json:"name"`
+	HandRank    int      `json:"handRank"`
+	NeededCards []string `json:"neededCards"`
+}
