@@ -15,10 +15,8 @@ import (
 )
 
 func main() {
-	// Load environment variables
-	if err := godotenv.Load(); err != nil {
-		log.Printf("Error loading .env file: %v", err)
-	}
+	// Load environment variables from .env if it exists (for local development)
+	godotenv.Load() // Ignore error as file may not exist in production
 
 	// Initialize database connection
 	db, err := database.InitDB()
@@ -27,10 +25,14 @@ func main() {
 	}
 	defer db.Close()
 
-	// Initialize Redis connection
-	redisClient := utils.InitRedis()
-	if redisClient != nil {
-		defer redisClient.Close()
+	// Initialize Redis connection only if Redis config is present
+	if os.Getenv("REDIS_HOST") != "" {
+		redisClient := utils.InitRedis()
+		if redisClient != nil {
+			defer redisClient.Close()
+		}
+	} else {
+		log.Println("Redis configuration not found, skipping Redis initialization")
 	}
 
 	// Create Fiber app
@@ -42,7 +44,12 @@ func main() {
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${status} - ${method} ${path}\n",
 	}))
-	app.Use(cors.New())
+
+	// Configure CORS for both local development and production
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // In production, you might want to restrict this to your frontend domain
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	// Setup routes
 	setup.SetupRoutes(app)
@@ -52,6 +59,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+
 	log.Printf("Server starting on port %s", port)
 	if err := app.Listen(":" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
